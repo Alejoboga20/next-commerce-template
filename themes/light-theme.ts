@@ -56,12 +56,14 @@ export const lightTheme = createTheme({
 			styleOverrides: {
 				root: {
 					textTransform: 'none',
+					backgroundColor: 'white',
 					boxShadow: 'none',
 					borderRadius: 10,
 					':hover': {
 						backgroundColor: 'rgba(0,0,0,0.05)',
 						transition: 'all 0.3s ease-in-out',
 					},
+					color: 'black',
 				},
 			},
 		},
