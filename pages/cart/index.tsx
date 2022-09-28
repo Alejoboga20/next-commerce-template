@@ -9,7 +9,7 @@ const CartPage = () => {
 				Shopping Cart
 			</Typography>
 
-			<Grid container>
+			<Grid container sx={{ mt: 2 }}>
 				<Grid item xs={12} sm={7}>
 					<CartList editable />
 				</Grid>
