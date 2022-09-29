@@ -10,6 +10,8 @@ export interface IProduct {
 	title: string;
 	type: ValidType;
 	gender: 'men' | 'women' | 'kid' | 'unisex';
+
+	/* TODO: add createdAt and updatedAt */
 }
 
 export type ValidSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
