@@ -6,7 +6,7 @@ const LoginPage = () => {
 	return (
 		<AuthLayout title='SingIn'>
 			<Box sx={{ width: 350, padding: '10px 20px' }}>
-				<Grid container>
+				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<Typography variant='h1' component='h1'>
 							Init Session
@@ -19,12 +19,12 @@ const LoginPage = () => {
 						<TextField label='Password' type='password' variant='filled' fullWidth />
 					</Grid>
 					<Grid item xs={12}>
-						<Button color='secondary' className='circular-btn' size='large'>
-							SignIn
+						<Button color='secondary' className='circular-btn' size='large' fullWidth>
+							Sign In
 						</Button>
 					</Grid>
 
-					<Grid item xs={12} justifyContent='end'>
+					<Grid item xs={12} display='flex' justifyContent='end'>
 						<NextLink href='auth/register' passHref>
 							<Link underline='always'>Do not have an account?</Link>
 						</NextLink>
