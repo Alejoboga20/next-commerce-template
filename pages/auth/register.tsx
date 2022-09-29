@@ -2,15 +2,18 @@ import NextLink from 'next/link';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { AuthLayout } from '../../components/layouts';
 
-const LoginPage = () => {
+const RegisterPage = () => {
 	return (
-		<AuthLayout title='SingIn'>
+		<AuthLayout title='Sing Up'>
 			<Box sx={{ width: 350, padding: '10px 20px' }}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<Typography variant='h1' component='h1'>
-							Init Session
+							Create Account
 						</Typography>
+					</Grid>
+					<Grid item xs={12}>
+						<TextField label='Full Name' variant='filled' fullWidth />
 					</Grid>
 					<Grid item xs={12}>
 						<TextField label='Email' variant='filled' fullWidth />
@@ -20,13 +23,13 @@ const LoginPage = () => {
 					</Grid>
 					<Grid item xs={12}>
 						<Button color='secondary' className='circular-btn' size='large' fullWidth>
-							Sign In
+							Sign Up
 						</Button>
 					</Grid>
 
 					<Grid item xs={12} display='flex' justifyContent='end'>
-						<NextLink href='/auth/register' passHref>
-							<Link underline='always'>Do not have an account?</Link>
+						<NextLink href='/auth/login' passHref>
+							<Link underline='always'>Already have an account?</Link>
 						</NextLink>
 					</Grid>
 				</Grid>
@@ -35,4 +38,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default RegisterPage;
