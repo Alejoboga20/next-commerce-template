@@ -1,10 +1,12 @@
 import type { NextPage } from 'next';
 import { Typography } from '@mui/material';
 import { ShopLayout } from '../components/layouts';
-import { initialData } from '../database/products';
 import { ProductList } from '../components/products';
+import { useProducts } from '../hooks';
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
+	const { products, isLoading, isError } = useProducts('/products');
+
 	return (
 		<ShopLayout title='Testlo-Shop - Home' pageDescription='Find the best products'>
 			<Typography variant='h1' component='h1'>
@@ -15,9 +17,9 @@ const Home: NextPage = () => {
 				Products
 			</Typography>
 
-			<ProductList products={initialData.products as any} />
+			{isLoading ? <h1>Loading...</h1> : <ProductList products={products} />}
 		</ShopLayout>
 	);
 };
 
-export default Home;
+export default HomePage;

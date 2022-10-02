@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardMedia, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { IProduct } from '../../interfaces';
 import { ProductCard } from './ProductCard';
 
@@ -6,7 +6,7 @@ export const ProductList = ({ products }: ProductListProps) => {
 	return (
 		<Grid container spacing={4}>
 			{products.map((product) => (
-				<ProductCard key={product.slug} product={product} />
+				<ProductCard key={product._id} product={product} />
 			))}
 		</Grid>
 	);

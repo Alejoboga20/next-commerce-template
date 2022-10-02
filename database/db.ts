@@ -12,7 +12,7 @@ const mongoConnection = {
 
 export const connect = async () => {
 	if (mongoConnection.isConnected) {
-		console.log('Ya estabamos conectados');
+		console.log('Connected');
 		return;
 	}
 
@@ -20,7 +20,7 @@ export const connect = async () => {
 		mongoConnection.isConnected = mongoose.connections[0].readyState;
 
 		if (mongoConnection.isConnected === 1) {
-			console.log('Usando conexión anterior');
+			console.log('Using Previous Connection');
 			return;
 		}
 
@@ -29,7 +29,7 @@ export const connect = async () => {
 
 	await mongoose.connect(process.env.MONGO_URL || '');
 	mongoConnection.isConnected = 1;
-	console.log('Conectado a MongoDB:', process.env.MONGO_URL);
+	console.log('Connecting to MongoDB:', process.env.MONGO_URL);
 };
 
 export const disconnect = async () => {
@@ -40,5 +40,5 @@ export const disconnect = async () => {
 	await mongoose.disconnect();
 	mongoConnection.isConnected = 0;
 
-	console.log('Desconectado de MongoDB');
+	console.log('Disconnecting from MongoDB');
 };
