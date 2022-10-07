@@ -17,7 +17,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 	return (
 		<Grid item xs={6} sm={4} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
 			<Card>
-				<NextLink href='/product/slug' passHref prefetch={false}>
+				<NextLink href={`/product/${product.slug}`} passHref prefetch={false}>
 					<Link>
 						<CardActionArea>
 							<CardMedia
