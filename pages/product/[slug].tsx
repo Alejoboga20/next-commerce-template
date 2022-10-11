@@ -1,10 +1,11 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui';
 import { IProduct } from '../../interfaces';
 import { dbProducts } from '../../database';
+import { redirect } from 'next/dist/server/api-utils';
 
 const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 	return (
@@ -44,7 +45,18 @@ const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async (ctx) => {
+	const productSlugs = await dbProducts.getAllProductsSlugs();
+
+	return {
+		paths: productSlugs.map(({ slug }) => ({
+			params: { slug },
+		})),
+		fallback: 'blocking',
+	};
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const { slug = '' } = params as { slug: string };
 	const product = await dbProducts.getProductBySlug(slug);
 
