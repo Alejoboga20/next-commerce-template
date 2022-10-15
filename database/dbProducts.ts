@@ -7,8 +7,6 @@ export const getProductBySlug = async (slug: string): Promise<IProduct | null> =
 
 	const product = await Product.findOne({ slug }).lean();
 
-	console.log(product);
-
 	await db.disconnect();
 
 	if (!product) return null;
