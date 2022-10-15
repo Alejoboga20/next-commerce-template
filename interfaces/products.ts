@@ -11,7 +11,8 @@ export interface IProduct {
 	type: ValidType;
 	gender: 'men' | 'women' | 'kid' | 'unisex';
 
-	/* TODO: add createdAt and updatedAt */
+	createdAt: string;
+	updatedAt: string;
 }
 
 export type ValidSize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
