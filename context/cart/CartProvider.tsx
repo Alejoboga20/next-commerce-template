@@ -6,10 +6,18 @@ import { CartContext, cartReducer } from './';
 
 export interface CartState {
 	cart: ICartProduct[];
+	numberOfItems: number;
+	subTotal: number;
+	tax: number;
+	total: number;
 }
 
 const CART_INITIAL_STATE: CartState = {
 	cart: [],
+	numberOfItems: 0,
+	subTotal: 0,
+	tax: 0,
+	total: 0,
 };
 
 export const CartProvider = ({ children }: CartProviderProps) => {
@@ -19,6 +27,25 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 		const cartFromCookies = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [];
 		dispatch({ type: '[Cart] - Load Cart from cookies | storage', payload: cartFromCookies });
 	}, []);
+
+	useEffect(() => {
+		const numberOfItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
+		const subTotal = state.cart.reduce(
+			(prev, current) => current.price * current.quantity + prev,
+			0
+		);
+		const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+		const tax = subTotal * taxRate;
+		const total = subTotal + tax;
+
+		const orderSummary = {
+			numberOfItems,
+			subTotal,
+			tax,
+			total,
+		};
+		dispatch({ type: '[Cart] - Update Order Summary', payload: orderSummary });
+	}, [state.cart]);
 
 	const addProductToCart = (product: ICartProduct) => {
 		const productInCart = state.cart.some((p) => p._id === product._id);
@@ -37,7 +64,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 			(p) => p._id === product._id && p.size === p.size
 		);
 
-		if (!productInCartWithDifferentSize) {
+		if (productInCartWithDifferentSize) {
 			dispatch({
 				type: '[Cart] - Update Products in Cart',
 				payload: [...state.cart, product],
