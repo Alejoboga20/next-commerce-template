@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 
+import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui';
@@ -9,6 +11,8 @@ import { ICartProduct, IProduct, ValidSize } from '../../interfaces';
 import { dbProducts } from '../../database';
 
 const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
+	const { addProductToCart } = useContext(CartContext);
+	const router = useRouter();
 	const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
 		_id: product._id,
 		image: product.images[0],
@@ -26,6 +30,13 @@ const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 
 	const onUpdatedQuantity = (newQuantity: number) => {
 		setTempCartProduct({ ...tempCartProduct, quantity: newQuantity });
+	};
+
+	const onAddProduct = () => {
+		if (!tempCartProduct.size) return;
+
+		addProductToCart(tempCartProduct);
+		router.push('/cart');
 	};
 
 	return (
@@ -58,11 +69,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 						</Box>
 
 						{product.inStock > 0 ? (
-							<Button
-								color='secondary'
-								className='circular-btn'
-								onClick={() => console.log(tempCartProduct)}
-							>
+							<Button color='secondary' className='circular-btn' onClick={onAddProduct}>
 								{tempCartProduct.size ? 'Add to Cart' : 'Select a Size'}
 							</Button>
 						) : (
