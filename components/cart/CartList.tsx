@@ -1,21 +1,22 @@
 import NextLink from 'next/link';
+import { useContext } from 'react';
 import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
-import { initialData } from '../../database/products';
+import { CartContext } from '../../context';
 import { ItemCounter } from '../ui';
 
-const productsInCart = [initialData.products[0], initialData.products[1], initialData.products[2]];
-
 export const CartList = ({ editable = false }: CartListProps) => {
+	const { cart } = useContext(CartContext);
+
 	return (
 		<>
-			{productsInCart.map((product) => (
+			{cart.map((product) => (
 				<Grid container key={product.slug} spacing={2} sx={{ mb: 2 }}>
 					<Grid item xs={3}>
 						<NextLink href='/product/slug' passHref>
 							<Link>
 								<CardActionArea>
 									<CardMedia
-										image={`/products/${product.images[0]}`}
+										image={`/products/${product.image}`}
 										component='img'
 										sx={{ borderRadius: '5px' }}
 									/>
@@ -30,7 +31,17 @@ export const CartList = ({ editable = false }: CartListProps) => {
 								Size: <strong>M</strong>
 							</Typography>
 
-							{editable ? <ItemCounter /> : <Typography variant='h4'>3 Items</Typography>}
+							{editable ? (
+								<ItemCounter
+									currentValue={product.quantity}
+									maxValue={10}
+									updatedQuantity={() => {}}
+								/>
+							) : (
+								<Typography variant='h4'>
+									{product.quantity} {product.quantity > 1 ? 'Products' : 'Product'}
+								</Typography>
+							)}
 						</Box>
 					</Grid>
 					<Grid item xs={2} display='flex' alignItems='center' flexDirection='column'>
