@@ -63,8 +63,23 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 		dispatch({ type: '[Cart] - Change Product Quantity in Cart', payload: product });
 	};
 
+	const removeCartProduct = (product: ICartProduct) => {
+		dispatch({ type: '[Cart] - Remove Product in Cart', payload: product });
+		Cookie.set(
+			'cart',
+			JSON.stringify(state.cart.filter((p) => !(p._id === product._id && p.size === product.size)))
+		);
+	};
+
 	return (
-		<CartContext.Provider value={{ ...state, addProductToCart, updateCartQuantity }}>
+		<CartContext.Provider
+			value={{
+				...state,
+				addProductToCart,
+				updateCartQuantity,
+				removeCartProduct,
+			}}
+		>
 			{children}
 		</CartContext.Provider>
 	);

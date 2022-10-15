@@ -7,7 +7,7 @@ import { ItemCounter } from '../ui';
 import { ICartProduct } from '../../interfaces';
 
 export const CartList = ({ editable = false }: CartListProps) => {
-	const { cart, updateCartQuantity } = useContext(CartContext);
+	const { cart, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
 	const onNewQuantity = (product: ICartProduct, newQuantity: number) => {
 		product.quantity = newQuantity;
@@ -54,7 +54,7 @@ export const CartList = ({ editable = false }: CartListProps) => {
 					<Grid item xs={2} display='flex' alignItems='center' flexDirection='column'>
 						<Typography variant='subtitle1'>${product.price}</Typography>
 						{editable && (
-							<Button variant='text' color='secondary'>
+							<Button variant='text' color='secondary' onClick={() => removeCartProduct(product)}>
 								Remove
 							</Button>
 						)}
