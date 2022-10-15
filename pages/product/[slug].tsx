@@ -1,11 +1,10 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
 import { ProductSlideshow, SizeSelector } from '../../components/products';
 import { ItemCounter } from '../../components/ui';
 import { IProduct } from '../../interfaces';
 import { dbProducts } from '../../database';
-import { redirect } from 'next/dist/server/api-utils';
 
 const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 	return (
@@ -29,11 +28,13 @@ const ProductPage: NextPage<ProductPageProps> = ({ product }) => {
 							<SizeSelector selectedSize={product.sizes[0]} sizes={product.sizes} />
 						</Box>
 
-						<Button color='secondary' className='circular-btn'>
-							Add to Cart
-						</Button>
-
-						{/* <Chip label='Unavailable' color='error' variant='outlined' /> */}
+						{product.inStock > 0 ? (
+							<Button color='secondary' className='circular-btn'>
+								Add to Cart
+							</Button>
+						) : (
+							<Chip label='Unavailable' color='error' variant='outlined' />
+						)}
 						<Box sx={{ mt: 3 }}>
 							<Typography variant='subtitle2'>Description</Typography>
 							<Typography variant='body2'>{product.description}</Typography>
