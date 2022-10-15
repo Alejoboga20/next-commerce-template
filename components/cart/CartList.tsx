@@ -1,18 +1,25 @@
 import NextLink from 'next/link';
 import { useContext } from 'react';
 import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
+
 import { CartContext } from '../../context';
 import { ItemCounter } from '../ui';
+import { ICartProduct } from '../../interfaces';
 
 export const CartList = ({ editable = false }: CartListProps) => {
-	const { cart } = useContext(CartContext);
+	const { cart, updateCartQuantity } = useContext(CartContext);
+
+	const onNewQuantity = (product: ICartProduct, newQuantity: number) => {
+		product.quantity = newQuantity;
+		updateCartQuantity(product);
+	};
 
 	return (
 		<>
 			{cart.map((product) => (
-				<Grid container key={product.slug} spacing={2} sx={{ mb: 2 }}>
+				<Grid container key={product.slug + product.size} spacing={2} sx={{ mb: 2 }}>
 					<Grid item xs={3}>
-						<NextLink href='/product/slug' passHref>
+						<NextLink href={`/product/${product.slug}`} passHref>
 							<Link>
 								<CardActionArea>
 									<CardMedia
@@ -28,14 +35,14 @@ export const CartList = ({ editable = false }: CartListProps) => {
 						<Box display='flex' flexDirection='column'>
 							<Typography variant='body1'>{product.title}</Typography>
 							<Typography variant='body1'>
-								Size: <strong>M</strong>
+								Size: <strong>{product.size}</strong>
 							</Typography>
 
 							{editable ? (
 								<ItemCounter
 									currentValue={product.quantity}
 									maxValue={10}
-									updatedQuantity={() => {}}
+									updatedQuantity={(newQuantity) => onNewQuantity(product, newQuantity)}
 								/>
 							) : (
 								<Typography variant='h4'>

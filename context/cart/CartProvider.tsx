@@ -59,8 +59,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 		Cookie.set('cart', JSON.stringify(updatedProducts));
 	};
 
+	const updateCartQuantity = (product: ICartProduct) => {
+		dispatch({ type: '[Cart] - Change Product Quantity in Cart', payload: product });
+	};
+
 	return (
-		<CartContext.Provider value={{ ...state, addProductToCart }}>{children}</CartContext.Provider>
+		<CartContext.Provider value={{ ...state, addProductToCart, updateCartQuantity }}>
+			{children}
+		</CartContext.Provider>
 	);
 };
 interface CartProviderProps {
