@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 import { db } from '../../../database';
 import { User } from '../../../models';
-import { jwt } from '../../../utils';
+import { jwt, validations } from '../../../utils';
 
 type Data =
 	| {
@@ -32,6 +32,8 @@ const registerUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => 
 
 	if (name.length < 2)
 		return res.status(400).json({ message: 'Name should be at least 2 characters long' });
+
+	if (!validations.isValidEmail(email)) return res.status(400).json({ message: 'Invalid Email' });
 
 	/* TODO: validate email */
 	await db.connect();
