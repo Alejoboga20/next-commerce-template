@@ -2,6 +2,7 @@ import NextLink from 'next/link';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import { AuthLayout } from '../../components/layouts';
 import { useForm } from 'react-hook-form';
+import { validations } from '../../utils';
 
 type FormData = {
 	email: string;
@@ -13,7 +14,7 @@ const LoginPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<FormData>();
+	} = useForm<FormData>({ mode: 'onTouched' });
 
 	const onLoginUser = (data: FormData) => {
 		console.log({ data });
@@ -21,7 +22,7 @@ const LoginPage = () => {
 
 	return (
 		<AuthLayout title='SingIn'>
-			<form onSubmit={handleSubmit(onLoginUser)}>
+			<form onSubmit={handleSubmit(onLoginUser)} noValidate>
 				<Box sx={{ width: 350, padding: '10px 20px' }}>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
@@ -31,7 +32,12 @@ const LoginPage = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
-								{...register('email')}
+								{...register('email', {
+									required: 'Email is Required',
+									validate: validations.isEmail,
+								})}
+								error={!!errors.email}
+								helperText={errors.email?.message}
 								type='email'
 								label='Email'
 								variant='filled'
@@ -40,7 +46,12 @@ const LoginPage = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
-								{...register('password')}
+								{...register('password', {
+									required: 'Password is Required',
+									minLength: { value: 6, message: 'Password should be at least 6 characters long' },
+								})}
+								error={!!errors.password}
+								helperText={errors.password?.message}
 								label='Password'
 								type='password'
 								variant='filled'
