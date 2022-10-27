@@ -32,7 +32,7 @@ export const SideMenu = () => {
 	const router = useRouter();
 	const [searchTerm, setSearchTerm] = useState('');
 	const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
-	const { user, isLoggedIn } = useContext(AuthContext);
+	const { user, isLoggedIn, logout } = useContext(AuthContext);
 
 	const onSearchTerm = () => {
 		if (searchTerm.trim().length === 0) return;
@@ -121,7 +121,7 @@ export const SideMenu = () => {
 					</ListItemButton>
 
 					{isLoggedIn ? (
-						<ListItemButton>
+						<ListItemButton onClick={logout}>
 							<ListItemIcon>
 								<LoginOutlined />
 							</ListItemIcon>
