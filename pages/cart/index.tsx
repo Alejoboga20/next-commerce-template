@@ -1,9 +1,9 @@
 import { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartContext } from '../../context';
-import { useRouter } from 'next/router';
 
 const CartPage = () => {
 	const router = useRouter();
@@ -35,7 +35,12 @@ const CartPage = () => {
 							<OrderSummary />
 
 							<Box sx={{ mt: 3 }}>
-								<Button color='secondary' className='circular-btn' fullWidth>
+								<Button
+									color='secondary'
+									className='circular-btn'
+									fullWidth
+									href='/checkout/address'
+								>
 									Checkout
 								</Button>
 							</Box>
