@@ -115,7 +115,10 @@ const RegisterPage = () => {
 						</Grid>
 
 						<Grid item xs={12} display='flex' justifyContent='end'>
-							<NextLink href='/auth/login' passHref>
+							<NextLink
+								href={router.query.p ? `/auth/login?p=${router.query.p}` : '/auth/login'}
+								passHref
+							>
 								<Link underline='always'>Already have an account?</Link>
 							</NextLink>
 						</Grid>
