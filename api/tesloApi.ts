@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const testloApi = axios.create({
+const tesloApi = axios.create({
 	baseURL: '/api',
 });
 
-export default testloApi;
+export default tesloApi;
