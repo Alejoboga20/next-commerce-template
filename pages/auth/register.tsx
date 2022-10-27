@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
 
 import { AuthLayout } from '../../components/layouts';
 import { validations } from '../../utils';
-import { tesloApi } from '../../api';
-import axios from 'axios';
-import { ErrorOutline } from '@mui/icons-material';
+import { AuthContext } from '../../context';
 
 type FormData = {
 	name: string;
@@ -16,7 +16,10 @@ type FormData = {
 };
 
 const RegisterPage = () => {
+	const router = useRouter();
 	const [showError, setShowError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const { registerUser } = useContext(AuthContext);
 
 	const {
 		register,
@@ -25,20 +28,19 @@ const RegisterPage = () => {
 	} = useForm<FormData>({ mode: 'onTouched' });
 
 	const onRegister = async ({ email, name, password }: FormData) => {
-		try {
-			const { data } = await tesloApi.post('/user/register', { name, email, password });
-			const { token, user } = data;
-			console.log({ token, user });
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				console.log(error);
-				setShowError(true);
+		setShowError(false);
 
-				setTimeout(() => {
-					setShowError(false);
-				}, 3000);
-			}
+		const { hasError, message } = await registerUser(email, password, name);
+
+		if (hasError) {
+			setShowError(true);
+			setErrorMessage(message!);
+			setTimeout(() => {
+				setShowError(false);
+			}, 3000);
 		}
+
+		router.replace('/');
 	};
 
 	return (

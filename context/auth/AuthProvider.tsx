@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useReducer } from 'react';
 import testloApi from '../../api/tesloApi';
@@ -29,8 +30,42 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		}
 	};
 
-	return <AuthContext.Provider value={{ ...state, loginUser }}>{children}</AuthContext.Provider>;
+	const registerUser = async (
+		email: string,
+		password: string,
+		name: string
+	): Promise<{ hasError: boolean; message?: string }> => {
+		try {
+			const { data } = await testloApi.post('/user/register', { email, password, name });
+			const { token, user } = data;
+			Cookies.set('token', token);
+
+			dispatch({ type: '[Auth] - Login', payload: user });
+			return {
+				hasError: false,
+			};
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				return {
+					hasError: true,
+					message: error.response?.data.message,
+				};
+			}
+
+			return {
+				hasError: true,
+				message: 'Unable to create this user',
+			};
+		}
+	};
+
+	return (
+		<AuthContext.Provider value={{ ...state, loginUser, registerUser }}>
+			{children}
+		</AuthContext.Provider>
+	);
 };
+
 interface AuthProviderProps {
 	children: JSX.Element | JSX.Element[];
 }
