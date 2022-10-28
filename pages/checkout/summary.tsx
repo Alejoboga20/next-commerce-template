@@ -1,9 +1,19 @@
+import { useContext, useMemo } from 'react';
 import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
+import { CartContext } from '../../context';
+import { countries } from '../../utils';
 
 const SummaryPage = () => {
+	const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+	if (!shippingAddress) return <></>;
+
+	const { firstName, lastName, address, address2, city, zip, country, phone } = shippingAddress;
+	const countryToDisplay = countries.find((c) => c.code === country)?.name;
+
 	return (
 		<ShopLayout title='Order Summary' pageDescription='Order Summary'>
 			<Typography variant='h1' component='h1'>
@@ -17,7 +27,9 @@ const SummaryPage = () => {
 				<Grid item xs={12} sm={5}>
 					<Card className='summary-card'>
 						<CardContent>
-							<Typography variant='h2'>Resume (3 products)</Typography>
+							<Typography variant='h2'>
+								Resume ({numberOfItems} {numberOfItems === 1 ? 'Product' : 'Products'})
+							</Typography>
 							<Divider sx={{ my: 1 }} />
 
 							<Box display='flex' justifyContent='end'>
@@ -27,11 +39,17 @@ const SummaryPage = () => {
 							</Box>
 
 							<Typography variant='subtitle1'>Shipping Address</Typography>
-							<Typography>Alejo Boga</Typography>
-							<Typography>21 Trimountain Ave</Typography>
-							<Typography>South Range, MI 49963</Typography>
-							<Typography>United States</Typography>
-							<Typography>+ 509 607 5140</Typography>
+							<Typography>
+								{firstName} {lastName}
+							</Typography>
+							<Typography>
+								{address} {address2 ? `, ${address2}` : ''}
+							</Typography>
+							<Typography>
+								{city}, {zip}
+							</Typography>
+							<Typography>{countryToDisplay}</Typography>
+							<Typography>{phone}</Typography>
 
 							<Divider />
 
