@@ -2,16 +2,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import Cookies from 'js-cookie';
-import {
-	Box,
-	Button,
-	FormControl,
-	Grid,
-	MenuItem,
-	Select,
-	TextField,
-	Typography,
-} from '@mui/material';
+import { Box, Button, FormControl, Grid, MenuItem, TextField, Typography } from '@mui/material';
 
 import { ShopLayout } from '../../components/layouts';
 import { countries, jwt } from '../../utils';
@@ -20,22 +11,24 @@ type FormData = {
 	firstName: string;
 	lastName: string;
 	address: string;
-	address2: string;
+	address2?: string;
 	zip: string;
 	city: string;
 	country: string;
 	phone: string;
 };
 
-const initialFormValues = {
-	firstName: '',
-	lastName: '',
-	address: '',
-	address2: '',
-	zip: '',
-	city: '',
-	country: countries[0].code,
-	phone: '',
+const getAddressFromCookies = (): FormData => {
+	return {
+		firstName: Cookies.get('firstName') || '',
+		lastName: Cookies.get('lastName') || '',
+		address: Cookies.get('address') || '',
+		address2: Cookies.get('address2') || '',
+		zip: Cookies.get('zip') || '',
+		city: Cookies.get('city') || '',
+		country: Cookies.get('country') || '',
+		phone: Cookies.get('phone') || '',
+	};
 };
 
 const AddressPage = () => {
@@ -45,14 +38,14 @@ const AddressPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<FormData>({ defaultValues: initialFormValues, mode: 'onTouched' });
+	} = useForm<FormData>({ defaultValues: getAddressFromCookies(), mode: 'onTouched' });
 
 	const onSubmit = (data: FormData) => {
 		console.log(data);
 		Cookies.set('firstName', data.firstName);
 		Cookies.set('lastName', data.lastName);
 		Cookies.set('address', data.address);
-		Cookies.set('address2', data.address2);
+		Cookies.set('address2', data.address2 || '');
 		Cookies.set('zip', data.zip);
 		Cookies.set('city', data.city);
 		Cookies.set('country', data.country);
