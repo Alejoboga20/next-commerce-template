@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -6,6 +7,7 @@ import { Box, Button, FormControl, Grid, MenuItem, TextField, Typography } from 
 
 import { ShopLayout } from '../../components/layouts';
 import { countries, jwt } from '../../utils';
+import { CartContext } from '../../context';
 
 type FormData = {
 	firstName: string;
@@ -32,6 +34,7 @@ const getAddressFromCookies = (): FormData => {
 };
 
 const AddressPage = () => {
+	const { updateAddress } = useContext(CartContext);
 	const router = useRouter();
 
 	const {
@@ -41,15 +44,7 @@ const AddressPage = () => {
 	} = useForm<FormData>({ defaultValues: getAddressFromCookies(), mode: 'onTouched' });
 
 	const onSubmit = (data: FormData) => {
-		console.log(data);
-		Cookies.set('firstName', data.firstName);
-		Cookies.set('lastName', data.lastName);
-		Cookies.set('address', data.address);
-		Cookies.set('address2', data.address2 || '');
-		Cookies.set('zip', data.zip);
-		Cookies.set('city', data.city);
-		Cookies.set('country', data.country);
-		Cookies.set('phone', data.phone);
+		updateAddress(data);
 		router.push('/checkout/summary');
 	};
 

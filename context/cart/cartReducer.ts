@@ -27,7 +27,8 @@ type CartActionType =
 				total: number;
 			};
 	  }
-	| { type: '[Cart] - Load Address From Cookies'; payload: ShippingAddress };
+	| { type: '[Cart] - Load Address From Cookies'; payload: ShippingAddress }
+	| { type: '[Cart] - Update Shipping Address'; payload: ShippingAddress };
 
 export const cartReducer = (state: CartState, action: CartActionType): CartState => {
 	switch (action.type) {
@@ -69,6 +70,7 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
 				...action.payload,
 			};
 
+		case '[Cart] - Update Shipping Address':
 		case '[Cart] - Load Address From Cookies':
 			return {
 				...state,
