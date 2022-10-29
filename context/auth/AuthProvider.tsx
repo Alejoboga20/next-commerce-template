@@ -22,6 +22,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const router = useRouter();
 	const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 
+	console.log({ data, status });
+
 	const loginUser = async (email: string, password: string): Promise<boolean> => {
 		try {
 			const { data } = await tesloApi.post('/user/login', { email, password });
