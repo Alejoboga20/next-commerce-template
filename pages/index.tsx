@@ -6,7 +6,7 @@ import { useProducts } from '../hooks';
 import { FullScreenLoading } from '../components/ui';
 
 const HomePage: NextPage = () => {
-	const { products, isLoading, isError } = useProducts('/products');
+	const { products, isLoading } = useProducts('/products');
 
 	return (
 		<ShopLayout title='Testlo-Shop - Home' pageDescription='Find the best products'>

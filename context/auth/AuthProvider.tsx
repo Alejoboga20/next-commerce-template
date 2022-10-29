@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -17,6 +18,7 @@ const AUTH_INITIAL_STATE: AuthState = {
 	user: undefined,
 };
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+	const { data, status } = useSession();
 	const router = useRouter();
 	const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 
@@ -82,8 +84,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	};
 
 	useEffect(() => {
-		checkToken();
-	}, []);
+		if (status === 'authenticated') {
+			//dispatch({ type: '[Auth] - Login', payload: data.user as IUser });
+		}
+	}, [status, data]);
 
 	return (
 		<AuthContext.Provider value={{ ...state, loginUser, registerUser, logout }}>
