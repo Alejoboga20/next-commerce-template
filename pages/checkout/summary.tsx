@@ -1,4 +1,6 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
+import { GetServerSideProps } from 'next';
+import { getToken } from 'next-auth/jwt';
 import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import { CartList, OrderSummary } from '../../components/cart';
@@ -72,6 +74,23 @@ const SummaryPage = () => {
 			</Grid>
 		</ShopLayout>
 	);
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+	const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: '/auth/login?p=/checkout/address',
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
 };
 
 export default SummaryPage;

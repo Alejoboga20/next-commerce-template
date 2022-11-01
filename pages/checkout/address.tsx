@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import { getToken } from 'next-auth/jwt';
 import { useForm } from 'react-hook-form';
 import Cookies from 'js-cookie';
 import { Box, Button, FormControl, Grid, MenuItem, TextField, Typography } from '@mui/material';
@@ -149,18 +150,9 @@ const AddressPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-	const { token = '' } = req.cookies;
+	const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-	let isValidToken = false;
-
-	try {
-		await jwt.isValidToken(token);
-		isValidToken = true;
-	} catch (error) {
-		isValidToken = false;
-	}
-
-	if (!isValidToken) {
+	if (!session) {
 		return {
 			redirect: {
 				destination: '/auth/login?p=/checkout/address',
