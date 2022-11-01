@@ -1,21 +1,28 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
+import Cookies from 'js-cookie';
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartContext } from '../../context';
 import { countries } from '../../utils';
 
 const SummaryPage = () => {
+	const router = useRouter();
 	const { shippingAddress, numberOfItems } = useContext(CartContext);
 
-	console.log({ shippingAddress });
+	useEffect(() => {
+		if (!Cookies.get('firstName')) {
+			router.replace('/checkout/address');
+		}
+	}, [router]);
+
 	if (!shippingAddress) return <></>;
 
 	const { firstName, lastName, address, address2, city, zip, country, phone } = shippingAddress;
-	const countryToDisplay = countries.find((c) => c.code === country)?.name;
 
 	return (
 		<ShopLayout title='Order Summary' pageDescription='Order Summary'>
@@ -51,7 +58,7 @@ const SummaryPage = () => {
 							<Typography>
 								{city}, {zip}
 							</Typography>
-							<Typography>{countryToDisplay}</Typography>
+							<Typography>{country}</Typography>
 							<Typography>{phone}</Typography>
 
 							<Divider />

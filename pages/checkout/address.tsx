@@ -1,13 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import { useForm } from 'react-hook-form';
 import Cookies from 'js-cookie';
-import { Box, Button, FormControl, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, Grid, TextField, Typography } from '@mui/material';
 
 import { ShopLayout } from '../../components/layouts';
-import { countries, jwt } from '../../utils';
 import { CartContext } from '../../context';
 
 type FormData = {
@@ -42,12 +41,29 @@ const AddressPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<FormData>({ defaultValues: getAddressFromCookies(), mode: 'onTouched' });
+		reset,
+	} = useForm<FormData>({
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			address: '',
+			address2: '',
+			zip: '',
+			city: '',
+			country: '',
+			phone: '',
+		},
+		mode: 'onTouched',
+	});
 
 	const onSubmit = (data: FormData) => {
 		updateAddress(data);
 		router.push('/checkout/summary');
 	};
+
+	useEffect(() => {
+		reset(getAddressFromCookies());
+	}, [reset]);
 
 	return (
 		<ShopLayout title='Address' pageDescription='Confirm Destiny'>
@@ -113,19 +129,13 @@ const AddressPage = () => {
 					<Grid item xs={12} sm={6}>
 						<FormControl fullWidth>
 							<TextField
-								select
 								variant='filled'
 								label='Country'
-								defaultValue={Cookies.get('country') || countries[0].code}
+								fullWidth
 								{...register('country', { required: 'Field Required' })}
 								error={!!errors.country}
-							>
-								{countries.map((country) => (
-									<MenuItem value={country.code} key={country.code}>
-										{country.name}
-									</MenuItem>
-								))}
-							</TextField>
+								helperText={errors.country?.message}
+							/>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12} sm={6}>
