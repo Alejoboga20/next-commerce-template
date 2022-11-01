@@ -11,6 +11,7 @@ import { countries } from '../../utils';
 const SummaryPage = () => {
 	const { shippingAddress, numberOfItems } = useContext(CartContext);
 
+	console.log({ shippingAddress });
 	if (!shippingAddress) return <></>;
 
 	const { firstName, lastName, address, address2, city, zip, country, phone } = shippingAddress;
@@ -82,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 	if (!session) {
 		return {
 			redirect: {
-				destination: '/auth/login?p=/checkout/address',
+				destination: '/auth/login?p=/checkout/summary',
 				permanent: false,
 			},
 		};
