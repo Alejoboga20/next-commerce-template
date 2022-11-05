@@ -1,11 +1,11 @@
-import { IUser } from './';
+import { IUser, ValidSize } from './';
 
 export interface IOrder {
 	_id?: string;
 	user?: IUser | string;
 	orderItems: IOrderItem[];
 	shippingAddress: ShippingAddress;
-	paymentResult: string;
+	paymentResult?: string;
 	numberOfItems: number;
 	subTotal: number;
 	tax: number;
@@ -15,9 +15,10 @@ export interface IOrder {
 }
 
 export interface IOrderItem {
-	id: string;
+	_id: string;
 	title: string;
-	size: string;
+	gender: string;
+	size: ValidSize;
 	quantity: number;
 	slug: string;
 	image: string;
