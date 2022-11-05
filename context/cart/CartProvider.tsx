@@ -3,6 +3,7 @@ import Cookie from 'js-cookie';
 
 import { ICartProduct, ShippingAddress } from '../../interfaces';
 import { CartContext, cartReducer } from './';
+import { tesloApi } from '../../api';
 
 export interface CartState {
 	cart: ICartProduct[];
@@ -132,14 +133,27 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 		dispatch({ type: '[Cart] - Update Shipping Address', payload: address });
 	};
 
+	const createOrder = async () => {
+		try {
+			const { data } = await tesloApi.post('/orders', {});
+			console.log({ data });
+		} catch (error) {
+			console.log({ error });
+		}
+	};
+
 	return (
 		<CartContext.Provider
 			value={{
 				...state,
+				//Cart
 				addProductToCart,
 				updateCartQuantity,
 				removeCartProduct,
 				updateAddress,
+
+				//Orders
+				createOrder,
 			}}
 		>
 			{children}
