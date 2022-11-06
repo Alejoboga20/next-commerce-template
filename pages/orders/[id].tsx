@@ -24,37 +24,41 @@ interface OrderPageProps {
 }
 
 const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
-	console.log({ order });
+	const { shippingAddress } = order;
 	return (
 		<ShopLayout title='Order' pageDescription='Order Summary'>
 			<Typography variant='h1' component='h1'>
-				Order: ABC123
+				Order: {order._id}
 			</Typography>
 
-			{/* <Chip
-				sx={{ my: 2 }}
-				label='Pending Payment'
-				variant='outlined'
-				color='error'
-				icon={<CreditCardOffOutlined />}
-			/> */}
-
-			<Chip
-				sx={{ my: 2 }}
-				label='Payment Completed'
-				variant='outlined'
-				color='success'
-				icon={<CreditScoreOutlined />}
-			/>
+			{order.isPaid ? (
+				<Chip
+					sx={{ my: 2 }}
+					label='Payment Completed'
+					variant='outlined'
+					color='success'
+					icon={<CreditScoreOutlined />}
+				/>
+			) : (
+				<Chip
+					sx={{ my: 2 }}
+					label='Pending Payment'
+					variant='outlined'
+					color='error'
+					icon={<CreditCardOffOutlined />}
+				/>
+			)}
 
 			<Grid container sx={{ mt: 2 }}>
 				<Grid item xs={12} sm={7}>
-					<CartList />
+					<CartList products={order.orderItems} />
 				</Grid>
 				<Grid item xs={12} sm={5}>
 					<Card className='summary-card'>
 						<CardContent>
-							<Typography variant='h2'>Resume (3 products)</Typography>
+							<Typography variant='h2'>
+								Resume ({order.numberOfItems} {order.numberOfItems > 1 ? 'products' : 'product'})
+							</Typography>
 							<Divider sx={{ my: 1 }} />
 
 							<Box display='flex' justifyContent='end'>
@@ -64,11 +68,17 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 							</Box>
 
 							<Typography variant='subtitle1'>Shipping Address</Typography>
-							<Typography>Alejo Boga</Typography>
-							<Typography>21 Trimountain Ave</Typography>
-							<Typography>South Range, MI 49963</Typography>
-							<Typography>United States</Typography>
-							<Typography>+ 509 607 5140</Typography>
+							<Typography>
+								{shippingAddress.firstName} {shippingAddress.lastName}
+							</Typography>
+							<Typography>
+								{shippingAddress.address} {shippingAddress.address2}
+							</Typography>
+							<Typography>
+								{shippingAddress.city}, {shippingAddress.zip}
+							</Typography>
+							<Typography>{shippingAddress.country}</Typography>
+							<Typography>{shippingAddress.phone}</Typography>
 
 							<Divider />
 

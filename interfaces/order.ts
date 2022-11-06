@@ -17,7 +17,7 @@ export interface IOrder {
 export interface IOrderItem {
 	_id: string;
 	title: string;
-	gender: string;
+	gender: 'men' | 'women' | 'kid' | 'unisex';
 	size: ValidSize;
 	quantity: number;
 	slug: string;
