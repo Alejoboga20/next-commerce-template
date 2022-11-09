@@ -1,7 +1,11 @@
+import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
 import { Chip, Grid, Link, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ShopLayout } from '../../components/layouts';
+import { getSession } from 'next-auth/react';
+import { dbOrders } from '../../database';
+import { IOrder } from '../../interfaces';
 
 const colums: GridColDef[] = [
 	{
@@ -35,7 +39,7 @@ const colums: GridColDef[] = [
 		sortable: false,
 		renderCell: (params: any) => {
 			return (
-				<NextLink href={`/orders/${params.row.id}`} passHref>
+				<NextLink href={`/orders/${params.row.orderId}`} passHref>
 					<Link underline='always'>See Order</Link>
 				</NextLink>
 			);
@@ -66,14 +70,23 @@ const rows = [
 	},
 ];
 
-const HistoryPage = () => {
+const HistoryPage: NextPage<HistoryPageProps> = ({ orders }) => {
+	const rows = orders.map((order, index) => ({
+		id: index + 1,
+		paid: order.isPaid,
+		fullname: `${order.shippingAddress.firstName} ${order.shippingAddress.lastName}`,
+		orderId: order._id,
+	}));
+
+	console.log({ rows });
+
 	return (
 		<ShopLayout title='Order History' pageDescription='Timeline History'>
 			<Typography variant='h1' component='h1'>
 				Order History
 			</Typography>
 
-			<Grid container>
+			<Grid container className='fadeIn'>
 				<Grid item xs={12} sx={{ height: 400, width: '100%' }}>
 					<DataGrid rows={rows} columns={colums} pageSize={10} rowsPerPageOptions={[10]} />
 				</Grid>
@@ -81,5 +94,31 @@ const HistoryPage = () => {
 		</ShopLayout>
 	);
 };
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+	const session = await getSession({ req });
+
+	if (!session) {
+		return {
+			redirect: {
+				destination: '/auth/login?p=/orders/history',
+				permanent: false,
+			},
+		};
+	}
+
+	const id = session.user._id;
+	const orders = await dbOrders.getOrdersByUser(id);
+
+	return {
+		props: {
+			orders,
+		},
+	};
+};
+
+interface HistoryPageProps {
+	orders: IOrder[];
+}
 
 export default HistoryPage;
