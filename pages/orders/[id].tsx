@@ -88,17 +88,27 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 								</NextLink>
 							</Box>
 
-							<OrderSummary />
+							<OrderSummary
+								orderValues={{
+									numberOfItems: order.numberOfItems,
+									subTotal: order.subTotal,
+									tax: order.tax,
+									total: order.total,
+								}}
+							/>
 
-							<Box sx={{ mt: 3 }}>
-								<h1>Pay</h1>
-								<Chip
-									sx={{ my: 2 }}
-									label='Payment Completed'
-									variant='outlined'
-									color='success'
-									icon={<CreditScoreOutlined />}
-								/>
+							<Box sx={{ mt: 3, display: 'flex', flexDirection: 'column' }}>
+								{order.isPaid ? (
+									<Chip
+										sx={{ my: 2 }}
+										label='Payment Completed'
+										variant='outlined'
+										color='success'
+										icon={<CreditScoreOutlined />}
+									/>
+								) : (
+									<h1>Pay</h1>
+								)}
 							</Box>
 						</CardContent>
 					</Card>
