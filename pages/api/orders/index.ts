@@ -48,7 +48,9 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 		const userId = session.user._id;
 		const body = { ...req.body, orderItems: orderItems.map((item) => ({ ...item, id: item._id })) };
 		const newOrder = new Order({ ...body, isPaid: false, user: userId });
+		newOrder.total = Math.round(newOrder.total * 100) / 100;
 		await newOrder.save();
+		await db.disconnect();
 
 		return res.status(201).json(newOrder);
 	} catch (error: any) {
