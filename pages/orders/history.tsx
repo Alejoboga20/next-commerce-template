@@ -78,8 +78,6 @@ const HistoryPage: NextPage<HistoryPageProps> = ({ orders }) => {
 		orderId: order._id,
 	}));
 
-	console.log({ rows });
-
 	return (
 		<ShopLayout title='Order History' pageDescription='Timeline History'>
 			<Typography variant='h1' component='h1'>
