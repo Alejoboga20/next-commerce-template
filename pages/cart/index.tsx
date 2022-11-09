@@ -17,6 +17,8 @@ const CartPage = () => {
 
 	if (!isLoaded || cart.length === 0) return <></>;
 
+	console.log({ cart });
+
 	return (
 		<ShopLayout title='Shopping Cart' pageDescription='Shopping Cart'>
 			<Typography variant='h1' component='h1'>
@@ -25,7 +27,7 @@ const CartPage = () => {
 
 			<Grid container sx={{ mt: 2 }}>
 				<Grid item xs={12} sm={7}>
-					<CartList editable />
+					<CartList editable products={cart} />
 				</Grid>
 				<Grid item xs={12} sm={5}>
 					<Card className='summary-card'>

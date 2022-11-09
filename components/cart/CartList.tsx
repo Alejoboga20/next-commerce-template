@@ -6,7 +6,7 @@ import { CartContext } from '../../context';
 import { ItemCounter } from '../ui';
 import { ICartProduct, IOrderItem } from '../../interfaces';
 
-export const CartList = ({ editable = false, products = [] }: CartListProps) => {
+export const CartList = ({ editable = false, products }: CartListProps) => {
 	const { cart, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
 	const onNewQuantity = (product: ICartProduct, newQuantity: number) => {
@@ -69,5 +69,5 @@ export const CartList = ({ editable = false, products = [] }: CartListProps) => 
 
 interface CartListProps {
 	editable?: boolean;
-	products: IOrderItem[];
+	products: ICartProduct[];
 }
