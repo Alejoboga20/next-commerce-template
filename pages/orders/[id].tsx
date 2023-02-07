@@ -104,7 +104,7 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 												purchase_units: [
 													{
 														amount: {
-															value: '1.99',
+															value: `${order.total}`,
 														},
 													},
 												],
@@ -113,7 +113,11 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 										onApprove={(data, actions) => {
 											return actions.order!.capture().then((details) => {
 												const name = details.payer.name!.given_name;
-												alert(`Transaction completed by ${name}`);
+												/* 
+												create_time:  "2023-02-07T19:41:32Z"
+												id: "1S4415380Y7745036"
+												intent: "CAPTURE"
+												*/
 											});
 										}}
 									/>
