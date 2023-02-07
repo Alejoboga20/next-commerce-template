@@ -9,13 +9,37 @@ import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
+import { tesloApi } from '../../api';
+import { useRouter } from 'next/router';
 
 interface OrderPageProps {
 	order: IOrder;
 }
 
+type OrderResponseBody = {
+	id: string;
+	status: 'COMPLETED' | 'SAVED' | 'APPROVED' | 'VOIDED' | 'COMPLETED' | 'PAYER_ACTION_REQUIRED';
+};
+
 const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
+	const router = useRouter();
 	const { shippingAddress } = order;
+
+	const onOrderCompleted = async (details: OrderResponseBody) => {
+		if (details.status !== 'COMPLETED') return alert('No payed');
+
+		try {
+			const { data } = await tesloApi.post(`/orders/pay`, {
+				transactionId: details.id,
+				orderId: order._id,
+			});
+
+			router.reload();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<ShopLayout title='Order' pageDescription='Order Summary'>
 			<Typography variant='h1' component='h1'>
@@ -112,12 +136,7 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 										}}
 										onApprove={(data, actions) => {
 											return actions.order!.capture().then((details) => {
-												const name = details.payer.name!.given_name;
-												/* 
-												create_time:  "2023-02-07T19:41:32Z"
-												id: "1S4415380Y7745036"
-												intent: "CAPTURE"
-												*/
+												onOrderCompleted(details);
 											});
 										}}
 									/>
