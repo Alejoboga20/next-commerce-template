@@ -1,13 +1,18 @@
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Grid, Select, MenuItem } from '@mui/material';
 import { PeopleOutline } from '@mui/icons-material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { AdminLayout } from '../../components/layouts';
 import { IUser } from '../../interfaces';
 import { tesloApi } from '../../api';
 
+interface UsersResponse {
+	users: IUser[];
+}
+
 const UsersPage = () => {
-	const { data, error } = useSWR<IUser>('/api/admin/users');
+	const { data, error } = useSWR<UsersResponse>('/api/admin/users');
 
 	if (!data && !error) return <div>Loading...</div>;
 

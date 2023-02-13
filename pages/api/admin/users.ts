@@ -4,7 +4,7 @@ import { db } from '../../../database';
 import { User } from '../../../models';
 import { IUser } from '../../../interfaces';
 
-const validRoles = ['admin', 'super-user', 'SEO'];
+const validRoles = ['admin', 'client', 'super-user', 'SEO'];
 
 type Data = {
 	message: string | { users: IUser[] };
@@ -44,11 +44,10 @@ const updateUsers = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await db.connect();
 	const user = await User.findById(userId);
-	console.log({ user });
 
 	if (!user) return res.status(400).json({ message: 'Invalud userId' });
 
-	user.user.role = role;
+	user.role = role;
 	await user.save();
 	await db.disconnect();
 
