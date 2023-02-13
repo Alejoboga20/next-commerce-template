@@ -24,8 +24,9 @@ export const AdminLayout = ({ title, subtitle, icon, children }: AdminLayoutProp
 					<Typography variant='h2' sx={{ mb: 1 }}>
 						{subtitle}
 					</Typography>
+
+					<Box className='fadeIn'>{children}</Box>
 				</Box>
-				<Box className='fadeIn'>{children}</Box>
 			</main>
 		</>
 	);
