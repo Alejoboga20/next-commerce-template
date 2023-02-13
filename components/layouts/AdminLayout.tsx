@@ -19,6 +19,7 @@ export const AdminLayout = ({ title, subtitle, icon, children }: AdminLayoutProp
 				<Box display='flex' flexDirection='column'>
 					<Typography variant='h1' component='h1'>
 						{icon}
+						{'  '}
 						{title}
 					</Typography>
 					<Typography variant='h2' sx={{ mb: 1 }}>
