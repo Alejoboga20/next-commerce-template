@@ -2,9 +2,9 @@ import useSWR from 'swr';
 import { ConfirmationNumberOutlined } from '@mui/icons-material';
 import { Chip, Grid } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { AdminLayout } from '../../components/layouts';
-import { IOrder } from '../../interfaces/order';
-import { IUser } from '../../interfaces';
+import { AdminLayout } from '../../../components/layouts';
+import { IOrder } from '../../../interfaces/order';
+import { IUser } from '../../../interfaces';
 
 const columns: GridColDef[] = [
 	{ field: 'id', headerName: 'Order ID', width: 250 },
@@ -25,7 +25,7 @@ const columns: GridColDef[] = [
 		field: 'check',
 		headerName: 'See Order',
 		renderCell: ({ row }) => (
-			<a href={`/admin/order/${row.id}`} target='_blank' rel='noreferrer'>
+			<a href={`/admin/orders/${row.id}`} target='_blank' rel='noreferrer'>
 				See Order
 			</a>
 		),
