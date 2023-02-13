@@ -13,13 +13,28 @@ interface UsersResponse {
 
 const UsersPage = () => {
 	const { data, error } = useSWR<UsersResponse>('/api/admin/users');
+	const [users, setUsers] = useState<IUser[]>([]);
+
+	useEffect(() => {
+		if (data) {
+			setUsers(data.users);
+		}
+	}, [data]);
 
 	if (!data && !error) return <div>Loading...</div>;
 
 	const onRoleUpdated = async (userId: string, newRole: string) => {
+		const prevUsers = users.map((user) => ({ ...user })) as IUser[];
+		const updatedUsers = users.map((user) => ({
+			...user,
+			role: userId === user._id ? newRole : user.role,
+		})) as IUser[];
+
 		try {
 			await tesloApi.put('/admin/users', { userId, role: newRole });
+			setUsers(updatedUsers);
 		} catch (error) {
+			setUsers(prevUsers);
 			console.log({ error });
 		}
 	};
@@ -50,7 +65,7 @@ const UsersPage = () => {
 		},
 	];
 
-	const rows = data?.users.map((user) => ({
+	const rows = users.map((user) => ({
 		id: user._id,
 		email: user.email,
 		name: user.name,
