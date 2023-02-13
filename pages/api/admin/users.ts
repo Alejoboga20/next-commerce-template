@@ -34,7 +34,7 @@ const getUsers = async (req: NextApiRequest, res: NextApiResponse) => {
 const updateUsers = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { userId = '', role = '' } = req.body;
 
-	if (isValidObjectId(userId)) {
+	if (!isValidObjectId(userId)) {
 		return res.status(400).json({ message: 'Invalud userId' });
 	}
 
@@ -44,10 +44,11 @@ const updateUsers = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	await db.connect();
 	const user = await User.findById(userId);
+	console.log({ user });
 
 	if (!user) return res.status(400).json({ message: 'Invalud userId' });
 
-	user.role = role;
+	user.user.role = role;
 	await user.save();
 	await db.disconnect();
 
