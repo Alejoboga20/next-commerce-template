@@ -1,32 +1,22 @@
 import { GetServerSideProps, NextPage } from 'next';
 import NextLink from 'next/link';
-import { getSession } from 'next-auth/react';
 import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
 import { Box, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
 
 import { CartList, OrderSummary } from '../../../components/cart';
-import { ShopLayout } from '../../../components/layouts/ShopLayout';
 import { dbOrders } from '../../../database';
 import { IOrder } from '../../../interfaces';
+import { AdminLayout } from '../../../components/layouts';
 
 interface OrderPageProps {
 	order: IOrder;
 }
 
-type OrderResponseBody = {
-	id: string;
-	status: 'COMPLETED' | 'SAVED' | 'APPROVED' | 'VOIDED' | 'COMPLETED' | 'PAYER_ACTION_REQUIRED';
-};
-
 const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 	const { shippingAddress } = order;
 
 	return (
-		<ShopLayout title='Order' pageDescription='Order Summary'>
-			<Typography variant='h1' component='h1'>
-				Order: {order._id}
-			</Typography>
-
+		<AdminLayout title='Order' subtitle={`Order Summary: ${order._id}`}>
 			{order.isPaid ? (
 				<Chip
 					sx={{ my: 2 }}
@@ -96,7 +86,7 @@ const OrderPage: NextPage<OrderPageProps> = ({ order }) => {
 					</Card>
 				</Grid>
 			</Grid>
-		</ShopLayout>
+		</AdminLayout>
 	);
 };
 
