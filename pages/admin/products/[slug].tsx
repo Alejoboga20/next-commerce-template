@@ -1,9 +1,6 @@
-import React, { FC } from 'react';
 import { GetServerSideProps } from 'next';
-import { AdminLayout } from '../../../components/layouts';
-import { IProduct } from '../../../interfaces';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
-import { dbProducts } from '../../../database';
 import {
 	Box,
 	Button,
@@ -19,12 +16,13 @@ import {
 	FormGroup,
 	FormLabel,
 	Grid,
-	ListItem,
-	Paper,
 	Radio,
 	RadioGroup,
 	TextField,
 } from '@mui/material';
+import { dbProducts } from '../../../database';
+import { AdminLayout } from '../../../components/layouts';
+import { IProduct } from '../../../interfaces';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -34,8 +32,19 @@ interface Props {
 	product: IProduct;
 }
 
-const ProductAdminPage: FC<Props> = ({ product }) => {
+type FormData = Omit<IProduct, 'createdAt' | 'updatedAt'>;
+
+const ProductAdminPage = ({ product }: Props) => {
+	const {
+		handleSubmit,
+		register,
+		formState: { errors },
+	} = useForm<FormData>({ defaultValues: product });
 	const onDeleteTag = (tag: string) => {};
+
+	const onSubmit: SubmitHandler<FormData> = (data) => {
+		console.log({ data });
+	};
 
 	return (
 		<AdminLayout
@@ -43,7 +52,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 			subtitle={`Edit: ${product.title}`}
 			icon={<DriveFileRenameOutline />}
 		>
-			<form>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
 					<Button
 						color='secondary'
@@ -56,26 +65,61 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 				</Box>
 
 				<Grid container spacing={2}>
-					{/* Data */}
 					<Grid item xs={12} sm={6}>
 						<TextField
-							label='Título'
+							label='Title'
 							variant='filled'
 							fullWidth
 							sx={{ mb: 1 }}
-							// { ...register('name', {
-							//     required: 'Este campo es requerido',
-							//     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
-							// })}
-							// error={ !!errors.name }
-							// helperText={ errors.name?.message }
+							{...register('title', {
+								required: 'Required Field',
+								minLength: { value: 2, message: 'Min length 2 chars' },
+							})}
+							error={!!errors.title}
+							helperText={errors.title?.message}
 						/>
 
-						<TextField label='Descripción' variant='filled' fullWidth multiline sx={{ mb: 1 }} />
+						<TextField
+							label='Description'
+							variant='filled'
+							fullWidth
+							multiline
+							sx={{ mb: 1 }}
+							{...register('description', {
+								required: 'Required Field',
+								minLength: { value: 2, message: 'Min length 2 chars' },
+							})}
+							error={!!errors.description}
+							helperText={errors.description?.message}
+						/>
 
-						<TextField label='Inventario' type='number' variant='filled' fullWidth sx={{ mb: 1 }} />
+						<TextField
+							label='In Stock'
+							type='number'
+							variant='filled'
+							fullWidth
+							sx={{ mb: 1 }}
+							{...register('inStock', {
+								required: 'Required Field',
+								min: { value: 0, message: 'Min value is 0' },
+							})}
+							error={!!errors.inStock}
+							helperText={errors.inStock?.message}
+						/>
 
-						<TextField label='Precio' type='number' variant='filled' fullWidth sx={{ mb: 1 }} />
+						<TextField
+							label='price'
+							type='number'
+							variant='filled'
+							fullWidth
+							sx={{ mb: 1 }}
+							{...register('price', {
+								required: 'Required Field',
+								min: { value: 0, message: 'Min value is 0' },
+							})}
+							error={!!errors.price}
+							helperText={errors.price?.message}
+						/>
 
 						<Divider sx={{ my: 1 }} />
 
@@ -125,7 +169,19 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 
 					{/* Tags e imagenes */}
 					<Grid item xs={12} sm={6}>
-						<TextField label='Slug - URL' variant='filled' fullWidth sx={{ mb: 1 }} />
+						<TextField
+							label='Slug - URL'
+							variant='filled'
+							fullWidth
+							sx={{ mb: 1 }}
+							{...register('slug', {
+								required: 'Required Field',
+								validate: (val) =>
+									val.trim().includes(' ') ? 'Blank spaces not allowed' : undefined,
+							})}
+							error={!!errors.slug}
+							helperText={errors.slug?.message}
+						/>
 
 						<TextField
 							label='Etiquetas'
