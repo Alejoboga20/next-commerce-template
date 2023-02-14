@@ -38,13 +38,16 @@ const ProductAdminPage = ({ product }: Props) => {
 	const {
 		handleSubmit,
 		register,
+		getValues,
+		setValue,
 		formState: { errors },
 	} = useForm<FormData>({ defaultValues: product });
-	const onDeleteTag = (tag: string) => {};
 
 	const onSubmit: SubmitHandler<FormData> = (data) => {
 		console.log({ data });
 	};
+
+	const onDeleteTag = (tag: string) => {};
 
 	return (
 		<AdminLayout
@@ -124,11 +127,13 @@ const ProductAdminPage = ({ product }: Props) => {
 						<Divider sx={{ my: 1 }} />
 
 						<FormControl sx={{ mb: 1 }}>
-							<FormLabel>Tipo</FormLabel>
+							<FormLabel>Type</FormLabel>
 							<RadioGroup
 								row
-								// value={ status }
-								// onChange={ onStatusChanged }
+								value={getValues('type')}
+								onChange={({ target }) =>
+									setValue('type', target.value as any, { shouldValidate: true })
+								}
 							>
 								{validTypes.map((option) => (
 									<FormControlLabel
@@ -142,11 +147,13 @@ const ProductAdminPage = ({ product }: Props) => {
 						</FormControl>
 
 						<FormControl sx={{ mb: 1 }}>
-							<FormLabel>Género</FormLabel>
+							<FormLabel>Gender</FormLabel>
 							<RadioGroup
 								row
-								// value={ status }
-								// onChange={ onStatusChanged }
+								value={getValues('gender')}
+								onChange={({ target }) =>
+									setValue('gender', target.value as any, { shouldValidate: true })
+								}
 							>
 								{validGender.map((option) => (
 									<FormControlLabel
