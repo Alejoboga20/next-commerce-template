@@ -23,6 +23,7 @@ import {
 import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
+import { useEffect } from 'react';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -40,8 +41,21 @@ const ProductAdminPage = ({ product }: Props) => {
 		register,
 		getValues,
 		setValue,
+		watch,
 		formState: { errors },
 	} = useForm<FormData>({ defaultValues: product });
+
+	useEffect(() => {
+		const subscription = watch((value, { name, type }) => {
+			if (name === 'title') {
+				const newSlug =
+					value.title?.trim().replaceAll(' ', '_').replaceAll("'", '').toLocaleLowerCase() || '';
+				setValue('slug', newSlug);
+			}
+		});
+
+		return () => subscription.unsubscribe();
+	}, [watch, setValue]);
 
 	const onSubmit: SubmitHandler<FormData> = (data) => {
 		console.log({ data });
