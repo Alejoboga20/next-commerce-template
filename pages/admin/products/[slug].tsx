@@ -49,6 +49,20 @@ const ProductAdminPage = ({ product }: Props) => {
 
 	const onDeleteTag = (tag: string) => {};
 
+	const onChangeSize = (size: string) => {
+		const currentSizes = getValues('sizes');
+
+		if (currentSizes.includes(size as any)) {
+			return setValue(
+				'sizes',
+				currentSizes.filter((s) => s !== size),
+				{ shouldValidate: true }
+			);
+		}
+
+		setValue('sizes', [...currentSizes, size as any], { shouldValidate: true });
+	};
+
 	return (
 		<AdminLayout
 			title={'Producto'}
@@ -167,9 +181,14 @@ const ProductAdminPage = ({ product }: Props) => {
 						</FormControl>
 
 						<FormGroup>
-							<FormLabel>Tallas</FormLabel>
+							<FormLabel>Sizes</FormLabel>
 							{validSizes.map((size) => (
-								<FormControlLabel key={size} control={<Checkbox />} label={size} />
+								<FormControlLabel
+									key={size}
+									control={<Checkbox checked={getValues('sizes').includes(size as any)} />}
+									label={size}
+									onChange={() => onChangeSize(size)}
+								/>
 							))}
 						</FormGroup>
 					</Grid>
