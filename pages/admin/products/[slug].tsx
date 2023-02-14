@@ -23,7 +23,7 @@ import {
 import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -36,6 +36,8 @@ interface Props {
 type FormData = Omit<IProduct, 'createdAt' | 'updatedAt'>;
 
 const ProductAdminPage = ({ product }: Props) => {
+	const [newTagValue, setNewTagValue] = useState('');
+
 	const {
 		handleSubmit,
 		register,
@@ -61,7 +63,21 @@ const ProductAdminPage = ({ product }: Props) => {
 		console.log({ data });
 	};
 
-	const onDeleteTag = (tag: string) => {};
+	const onDeleteTag = (tag: string) => {
+		const updatedTags = getValues('tags').filter((t) => t !== tag);
+		setValue('tags', updatedTags, { shouldValidate: true });
+	};
+
+	const onNewTag = () => {
+		const newTag = newTagValue.trim().toLowerCase();
+		setNewTagValue('');
+
+		const currentTags = getValues('tags');
+
+		if (currentTags.includes(newTag)) return;
+
+		currentTags.push(newTag);
+	};
 
 	const onChangeSize = (size: string) => {
 		const currentSizes = getValues('sizes');
@@ -224,11 +240,14 @@ const ProductAdminPage = ({ product }: Props) => {
 						/>
 
 						<TextField
-							label='Etiquetas'
+							label='tags'
 							variant='filled'
 							fullWidth
 							sx={{ mb: 1 }}
-							helperText='Presiona [spacebar] para agregar'
+							helperText='Press [spacebar] to add'
+							value={newTagValue}
+							onChange={({ target }) => setNewTagValue(target.value)}
+							onKeyUp={({ code }) => (code === 'Space' ? onNewTag() : undefined)}
 						/>
 
 						<Box
@@ -241,7 +260,7 @@ const ProductAdminPage = ({ product }: Props) => {
 							}}
 							component='ul'
 						>
-							{product.tags.map((tag) => {
+							{getValues('tags').map((tag) => {
 								return (
 									<Chip
 										key={tag}
