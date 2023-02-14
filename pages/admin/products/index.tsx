@@ -2,8 +2,8 @@ import useSWR from 'swr';
 import { ConfirmationNumberOutlined } from '@mui/icons-material';
 import { CardMedia, Grid } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { AdminLayout } from '../../components/layouts';
-import { IProduct } from '../../interfaces';
+import { AdminLayout } from '../../../components/layouts';
+import { IProduct } from '../../../interfaces';
 
 const columns: GridColDef[] = [
 	{
