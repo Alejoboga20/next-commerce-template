@@ -23,7 +23,7 @@ import {
 import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { tesloApi } from '../../../api';
 import { Product } from '../../../models';
 import { useRouter } from 'next/router';
@@ -39,6 +39,7 @@ interface Props {
 type FormData = Omit<IProduct, 'createdAt' | 'updatedAt'>;
 
 const ProductAdminPage = ({ product }: Props) => {
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
 	const [isSaving, setIsSaving] = useState(false);
 	const [newTagValue, setNewTagValue] = useState('');
@@ -115,6 +116,17 @@ const ProductAdminPage = ({ product }: Props) => {
 		}
 
 		setValue('sizes', [...currentSizes, size as any], { shouldValidate: true });
+	};
+
+	const onFileSelected = ({ target }: ChangeEvent<HTMLInputElement>) => {
+		if (!target.files || target.files.length === 0) return;
+
+		try {
+			for (const file of target.files) {
+				const formData = new FormData();
+				console.log(file);
+			}
+		} catch (error) {}
 	};
 
 	return (
@@ -303,9 +315,24 @@ const ProductAdminPage = ({ product }: Props) => {
 
 						<Box display='flex' flexDirection='column'>
 							<FormLabel sx={{ mb: 1 }}>Imágenes</FormLabel>
-							<Button color='secondary' fullWidth startIcon={<UploadOutlined />} sx={{ mb: 3 }}>
-								Cargar imagen
+							<Button
+								color='secondary'
+								fullWidth
+								startIcon={<UploadOutlined />}
+								sx={{ mb: 3 }}
+								onClick={() => fileInputRef.current?.click()}
+							>
+								Upload Images
 							</Button>
+
+							<input
+								multiple
+								ref={fileInputRef}
+								type='file'
+								accept='image/png, image/gif, image/jpeg'
+								style={{ display: 'none' }}
+								onChange={onFileSelected}
+							/>
 
 							<Chip label='Es necesario al 2 imagenes' color='error' variant='outlined' />
 
