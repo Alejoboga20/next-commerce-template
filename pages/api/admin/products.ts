@@ -41,8 +41,7 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
 
 	if (!isValidObjectId(_id)) return res.status(400).json({ message: 'invalid id' });
 
-	if (images.length <= 2)
-		return res.status(400).json({ message: 'at least 2 images are required' });
+	if (images.length < 2) return res.status(400).json({ message: 'at least 2 images are required' });
 
 	try {
 		await db.connect();

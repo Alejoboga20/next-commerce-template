@@ -24,6 +24,7 @@ import { dbProducts } from '../../../database';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
 import { useEffect, useState } from 'react';
+import { tesloApi } from '../../../api';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -36,6 +37,7 @@ interface Props {
 type FormData = Omit<IProduct, 'createdAt' | 'updatedAt'>;
 
 const ProductAdminPage = ({ product }: Props) => {
+	const [isSaving, setIsSaving] = useState(false);
 	const [newTagValue, setNewTagValue] = useState('');
 
 	const {
@@ -44,7 +46,7 @@ const ProductAdminPage = ({ product }: Props) => {
 		getValues,
 		setValue,
 		watch,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 	} = useForm<FormData>({ defaultValues: product });
 
 	useEffect(() => {
@@ -59,8 +61,26 @@ const ProductAdminPage = ({ product }: Props) => {
 		return () => subscription.unsubscribe();
 	}, [watch, setValue]);
 
-	const onSubmit: SubmitHandler<FormData> = (data) => {
-		console.log({ data });
+	const onSubmit: SubmitHandler<FormData> = async (data) => {
+		if (data.images.length < 2) return alert('Two images are required');
+		setIsSaving(false);
+
+		try {
+			const response = await tesloApi({
+				url: '/admin/products',
+				method: 'PUT',
+				data,
+			});
+			console.log({ response });
+			if (!data._id) {
+				//reload page
+			} else {
+				setIsSaving(false);
+			}
+		} catch (error) {
+			console.log(error);
+			setIsSaving(false);
+		}
 	};
 
 	const onDeleteTag = (tag: string) => {
@@ -106,6 +126,7 @@ const ProductAdminPage = ({ product }: Props) => {
 						startIcon={<SaveOutlined />}
 						sx={{ width: '150px' }}
 						type='submit'
+						disabled={isSubmitting}
 					>
 						Guardar
 					</Button>
