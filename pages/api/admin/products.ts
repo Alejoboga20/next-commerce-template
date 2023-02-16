@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { isValidObjectId } from 'mongoose';
+import { v2 as cloudinary } from 'cloudinary';
 import { IProduct } from '../../../interfaces';
 import { db } from '../../../database';
 import { Product } from '../../../models';
-import { isValidObjectId } from 'mongoose';
+
+cloudinary.config(process.env.CLOUDINARY_URL || '');
 
 type Data =
 	| {
@@ -75,7 +78,13 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
 			return res.status(400).json({ message: 'no product found' });
 		}
 
-		/* TODO: delete imgs in cloudinary */
+		product.images.forEach(async (image) => {
+			if (!images.includes(image)) {
+				const [fileId, fileExtension] = image.substring(image.lastIndexOf('/') + 1).split('.');
+				console.log({ image, fileExtension, fileId });
+				await cloudinary.uploader.destroy(fileId);
+			}
+		});
 
 		await product.update(req.body);
 		await product.save();

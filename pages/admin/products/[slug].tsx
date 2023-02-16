@@ -127,9 +127,18 @@ const ProductAdminPage = ({ product }: Props) => {
 				formData.append('file', file);
 
 				const { data } = await tesloApi.post<{ message: string }>('/admin/upload', formData);
-				console.log({ data });
+				console.log(data.message);
+				setValue('images', [...getValues('images'), data.message], { shouldValidate: true });
 			}
 		} catch (error) {}
+	};
+
+	const onDeleteImage = (image: string) => {
+		setValue(
+			'images',
+			getValues('images').filter((img) => img !== image),
+			{ shouldValidate: true }
+		);
 	};
 
 	return (
@@ -340,17 +349,17 @@ const ProductAdminPage = ({ product }: Props) => {
 							<Chip label='Es necesario al 2 imagenes' color='error' variant='outlined' />
 
 							<Grid container spacing={2}>
-								{product.images.map((img) => (
+								{getValues('images').map((img) => (
 									<Grid item xs={4} sm={3} key={img}>
 										<Card>
 											<CardMedia
 												component='img'
 												className='fadeIn'
-												image={`/products/${img}`}
+												image={img.includes('cloudinary') ? img : `/products/${img}`}
 												alt={img}
 											/>
 											<CardActions>
-												<Button fullWidth color='error'>
+												<Button fullWidth color='error' onClick={() => onDeleteImage(img)}>
 													Borrar
 												</Button>
 											</CardActions>
