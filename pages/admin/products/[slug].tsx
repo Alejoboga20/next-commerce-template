@@ -25,6 +25,8 @@ import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
 import { useEffect, useState } from 'react';
 import { tesloApi } from '../../../api';
+import { Product } from '../../../models';
+import { useRouter } from 'next/router';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -37,6 +39,7 @@ interface Props {
 type FormData = Omit<IProduct, 'createdAt' | 'updatedAt'>;
 
 const ProductAdminPage = ({ product }: Props) => {
+	const router = useRouter();
 	const [isSaving, setIsSaving] = useState(false);
 	const [newTagValue, setNewTagValue] = useState('');
 
@@ -46,7 +49,7 @@ const ProductAdminPage = ({ product }: Props) => {
 		getValues,
 		setValue,
 		watch,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 	} = useForm<FormData>({ defaultValues: product });
 
 	useEffect(() => {
@@ -68,12 +71,13 @@ const ProductAdminPage = ({ product }: Props) => {
 		try {
 			const response = await tesloApi({
 				url: '/admin/products',
-				method: 'PUT',
+				method: data._id ? 'PUT' : 'POST',
 				data,
 			});
 			console.log({ response });
+
 			if (!data._id) {
-				//reload page
+				router.replace(`/admin/products/${data.slug}`);
 			} else {
 				setIsSaving(false);
 			}
@@ -126,7 +130,7 @@ const ProductAdminPage = ({ product }: Props) => {
 						startIcon={<SaveOutlined />}
 						sx={{ width: '150px' }}
 						type='submit'
-						disabled={isSubmitting}
+						disabled={isSaving}
 					>
 						Guardar
 					</Button>
@@ -338,7 +342,16 @@ const ProductAdminPage = ({ product }: Props) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const { slug = '' } = query;
 
-	const product = await dbProducts.getProductBySlug(slug.toString());
+	let product: IProduct | null;
+
+	if (slug === 'new') {
+		const tempProduct = JSON.parse(JSON.stringify(new Product()));
+		delete tempProduct._id;
+		tempProduct.images = ['img1.jpg', 'img2.jpg'];
+		product = tempProduct;
+	} else {
+		product = await dbProducts.getProductBySlug(slug.toString());
+	}
 
 	if (!product) {
 		return {

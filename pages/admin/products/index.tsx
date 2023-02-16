@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { ConfirmationNumberOutlined } from '@mui/icons-material';
-import { CardMedia, Grid, Link } from '@mui/material';
+import { AddOutlined, ConfirmationNumberOutlined } from '@mui/icons-material';
+import { Box, Button, CardMedia, Grid, Link } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { AdminLayout } from '../../../components/layouts';
 import { IProduct } from '../../../interfaces';
@@ -58,6 +58,11 @@ const ProductsPage = () => {
 			subtitle='Products Maintainance'
 			icon={<ConfirmationNumberOutlined />}
 		>
+			<Box display='flex' justifyContent='end' sx={{ mb: 2 }}>
+				<Button startIcon={<AddOutlined />} color='secondary' href='/admin/products/new'>
+					Create Product
+				</Button>
+			</Box>
 			<Grid container className='fadeIn'>
 				<Grid item xs={12} sx={{ height: 400, width: '100%' }}>
 					<DataGrid rows={rows || []} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
