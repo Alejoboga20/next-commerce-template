@@ -33,7 +33,29 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 };
 
 const createProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-	throw new Error('Function not implemented.');
+	const { images = [] } = req.body as IProduct;
+
+	if (images.length < 2) return res.status(400).json({ message: 'at least 2 images are required' });
+
+	try {
+		await db.connect();
+		const productInDB = await Product.findOne({ slug: req.body.slug }).lean();
+
+		if (productInDB) {
+			await db.disconnect();
+			return res.status(400).json({ message: 'Duplicated slug' });
+		}
+
+		const product = new Product(req.body);
+		product.save();
+
+		await db.disconnect();
+		return res.status(201).json(product);
+	} catch (error) {
+		console.log(error);
+		await db.disconnect();
+		return res.status(400).json({ message: 'Check logs' });
+	}
 };
 
 const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
