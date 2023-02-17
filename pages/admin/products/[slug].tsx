@@ -346,18 +346,18 @@ const ProductAdminPage = ({ product }: Props) => {
 								onChange={onFileSelected}
 							/>
 
-							<Chip label='Es necesario al 2 imagenes' color='error' variant='outlined' />
+							<Chip
+								label='At least 2 images are required'
+								color='error'
+								variant='outlined'
+								sx={{ display: getValues('images').length >= 2 ? 'none' : 'flex' }}
+							/>
 
 							<Grid container spacing={2}>
 								{getValues('images').map((img) => (
 									<Grid item xs={4} sm={3} key={img}>
 										<Card>
-											<CardMedia
-												component='img'
-												className='fadeIn'
-												image={img.includes('cloudinary') ? img : `/products/${img}`}
-												alt={img}
-											/>
+											<CardMedia component='img' className='fadeIn' image={img} alt={img} />
 											<CardActions>
 												<Button fullWidth color='error' onClick={() => onDeleteImage(img)}>
 													Borrar
